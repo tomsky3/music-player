@@ -84,12 +84,52 @@ body {
     animation: fadeInUp 0.8s ease-out 0.2s backwards;
 }
 
+/* 歌曲容器 */
+.songs-container {
+    margin-top: 40px;
+}
+
+/* 歌曲分类区域 */
+.songs-section {
+    margin-bottom: 60px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.section-title svg {
+    color: var(--primary);
+}
+
+.section-count {
+    font-size: 14px;
+    color: var(--text-secondary);
+    background: var(--glass-bg);
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+}
+
 /* 歌曲网格布局 */
 .songs-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 24px;
-    padding: 20px;
+    padding: 0 20px;
 }
 
 /* 歌曲卡片 */

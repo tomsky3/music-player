@@ -14,7 +14,10 @@ class AudioPlayer {
         this.likesCounts = {}; // 缓存点赞数
         
         // DOM元素
-        this.songsGrid = document.getElementById('songsGrid');
+        this.themeSongsGrid = document.getElementById('themeSongsGrid');
+        this.otherSongsGrid = document.getElementById('otherSongsGrid');
+        this.themeCount = document.getElementById('themeCount');
+        this.otherCount = document.getElementById('otherCount');
         this.currentCover = document.getElementById('currentCover');
         this.currentTitle = document.getElementById('currentTitle');
         this.currentArtist = document.getElementById('currentArtist');
@@ -100,25 +103,44 @@ class AudioPlayer {
     }
     
     /**
-     * 渲染歌曲列表
+     * 渲染歌曲列表（分类展示）
      */
     renderSongsList() {
-        if (this.songs.length === 0) {
-            this.songsGrid.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-secondary);">
-                    <p style="font-size: 16px; margin-bottom: 8px;">暂无歌曲</p>
-                    <p style="font-size: 14px;">点击右上角"上传歌曲"添加您的作品</p>
+        // 分类歌曲
+        const themeSongs = this.songs.filter(song => song.category === 'theme');
+        const otherSongs = this.songs.filter(song => song.category !== 'theme');
+        
+        // 更新歌曲数量
+        this.themeCount.textContent = `${themeSongs.length} 首`;
+        this.otherCount.textContent = `${otherSongs.length} 首`;
+        
+        // 渲染主题曲
+        this.renderSongGrid(this.themeSongsGrid, themeSongs);
+        
+        // 渲染其它歌单
+        this.renderSongGrid(this.otherSongsGrid, otherSongs);
+    }
+    
+    /**
+     * 渲染单个歌曲网格
+     */
+    renderSongGrid(gridElement, songs) {
+        if (songs.length === 0) {
+            gridElement.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <p style="font-size: 14px;">暂无歌曲</p>
                 </div>
             `;
             return;
         }
         
-        this.songsGrid.innerHTML = this.songs.map((song, index) => {
+        gridElement.innerHTML = songs.map((song) => {
+            const globalIndex = this.songs.findIndex(s => s.id === song.id);
             const likesCount = this.likesCounts[song.id] || 0;
             const hasLiked = typeof likesManager !== 'undefined' && likesManager.hasLiked(song.id);
             
             return `
-                <div class="song-card" data-index="${index}" data-song-id="${song.id}">
+                <div class="song-card" data-index="${globalIndex}" data-song-id="${song.id}">
                     <div class="card-cover">
                         <img src="${song.cover}" alt="${song.title}" onerror="this.src='https://placehold.co/200x200/1a1a2e/1DB954?text=♪'">
                         <div class="play-overlay">
