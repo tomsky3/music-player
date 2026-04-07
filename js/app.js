@@ -183,23 +183,15 @@ class AudioPlayer {
      * 绑定事件监听器
      */
     bindEvents() {
-        // 歌曲卡片点击
-        this.songsGrid.addEventListener('click', (e) => {
-            // 检查是否点击了点赞按钮
-            const likeBtn = e.target.closest('.like-btn');
-            if (likeBtn) {
-                e.stopPropagation();
-                this.handleLikeClick(likeBtn);
-                return;
-            }
-            
-            // 否则播放歌曲
-            const card = e.target.closest('.song-card');
-            if (card) {
-                const index = parseInt(card.dataset.index);
-                this.playSong(index);
-            }
-        });
+        // 歌曲卡片点击 - 主题曲网格
+        if (this.themeSongsGrid) {
+            this.themeSongsGrid.addEventListener('click', (e) => this.handleSongCardClick(e));
+        }
+        
+        // 歌曲卡片点击 - 其它歌单网格
+        if (this.otherSongsGrid) {
+            this.otherSongsGrid.addEventListener('click', (e) => this.handleSongCardClick(e));
+        }
         
         // 播放/暂停按钮
         this.playBtn.addEventListener('click', () => {
@@ -306,6 +298,26 @@ class AudioPlayer {
             e.preventDefault();
             await this.handleUpload();
         });
+    }
+    
+    /**
+     * 处理歌曲卡片点击
+     */
+    handleSongCardClick(e) {
+        // 检查是否点击了点赞按钮
+        const likeBtn = e.target.closest('.like-btn');
+        if (likeBtn) {
+            e.stopPropagation();
+            this.handleLikeClick(likeBtn);
+            return;
+        }
+        
+        // 否则播放歌曲
+        const card = e.target.closest('.song-card');
+        if (card) {
+            const index = parseInt(card.dataset.index);
+            this.playSong(index);
+        }
     }
     
     /**
