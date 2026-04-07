@@ -16,10 +16,10 @@ const CONFIG = {
     cos: {
         // SecretId - 从腾讯云控制台获取
         // 路径：访问管理 > 访问密钥 > API密钥管理
-        secretId: 'YOUR_COS_SECRET_ID',
+        secretId: 'AKIDufBSUFjxvd5IJ4ZondGdkaAUXKr9C0XQ',
         
         // SecretKey - 从腾讯云控制台获取
-        secretKey: 'YOUR_COS_SECRET_KEY',
+        secretKey: 'f4c1C8qJXXN1QbXEgtteASVJsDJAnCNJ',
         
         // 存储桶名称 - 创建存储桶时设置的名称
         // 格式：bucketname-appid

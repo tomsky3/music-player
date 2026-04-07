@@ -26,10 +26,25 @@ class UploadManager {
                 return false;
             }
 
-            // 创建 COS 客户端
-            this.cos = new COS({
+            // 调试：输出配置信息
+            console.log('COS 配置:', {
                 SecretId: CONFIG.cos.secretId,
-                SecretKey: CONFIG.cos.secretKey
+                bucket: CONFIG.cos.bucket,
+                region: CONFIG.cos.region
+            });
+
+            // 创建 COS 客户端（使用 getAuthorization 方式）
+            const self = this;
+            this.cos = new COS({
+                getAuthorization: function (options, callback) {
+                    callback({
+                        TmpSecretId: CONFIG.cos.secretId,
+                        TmpSecretKey: CONFIG.cos.secretKey,
+                        SecurityToken: '',
+                        ExpiredTime: Math.floor(Date.now() / 1000) + 3600,
+                        StartTime: Math.floor(Date.now() / 1000)
+                    });
+                }
             });
 
             this.initialized = true;
