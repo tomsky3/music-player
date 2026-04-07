@@ -106,13 +106,23 @@ class AudioPlayer {
      * 渲染歌曲列表（分类展示）
      */
     renderSongsList() {
+        // 检查 DOM 元素是否存在
+        if (!this.themeSongsGrid || !this.otherSongsGrid) {
+            console.error('歌曲列表容器元素未找到');
+            return;
+        }
+        
         // 分类歌曲
         const themeSongs = this.songs.filter(song => song.category === 'theme');
         const otherSongs = this.songs.filter(song => song.category !== 'theme');
         
         // 更新歌曲数量
-        this.themeCount.textContent = `${themeSongs.length} 首`;
-        this.otherCount.textContent = `${otherSongs.length} 首`;
+        if (this.themeCount) {
+            this.themeCount.textContent = `${themeSongs.length} 首`;
+        }
+        if (this.otherCount) {
+            this.otherCount.textContent = `${otherSongs.length} 首`;
+        }
         
         // 渲染主题曲
         this.renderSongGrid(this.themeSongsGrid, themeSongs);
