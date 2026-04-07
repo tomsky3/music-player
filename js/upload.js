@@ -33,18 +33,10 @@ class UploadManager {
                 region: CONFIG.cos.region
             });
 
-            // 创建 COS 客户端（使用 getAuthorization 方式）
-            const self = this;
+            // 创建 COS 客户端（使用永久密钥直接传入）
             this.cos = new COS({
-                getAuthorization: function (options, callback) {
-                    callback({
-                        TmpSecretId: CONFIG.cos.secretId,
-                        TmpSecretKey: CONFIG.cos.secretKey,
-                        SecurityToken: '',
-                        ExpiredTime: Math.floor(Date.now() / 1000) + 3600,
-                        StartTime: Math.floor(Date.now() / 1000)
-                    });
-                }
+                SecretId: CONFIG.cos.secretId,
+                SecretKey: CONFIG.cos.secretKey
             });
 
             this.initialized = true;
