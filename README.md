@@ -24,6 +24,7 @@
 │   ├── app.js             # 播放器逻辑
 │   ├── config.js          # 配置文件（COS + Supabase）
 │   ├── likes.js           # 点赞模块
+│   ├── songs-manager.js   # 歌曲数据管理模块
 │   └── upload.js          # 上传模块
 ├── assets/
 │   ├── songs/             # MP3 文件存储目录
@@ -191,7 +192,7 @@ cos: {
 }
 ```
 
-#### 2. Supabase 配置（点赞功能）
+#### 2. Supabase 配置（点赞功能 + 歌曲数据持久化）
 
 Supabase 提供免费额度：500MB 数据库 + 1GB 文件存储。
 
@@ -216,27 +217,40 @@ CREATE TABLE song_likes (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 创建歌曲数据表
+CREATE TABLE songs (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    artist TEXT,
+    album TEXT,
+    duration TEXT,
+    cover TEXT,
+    file TEXT NOT NULL,
+    category TEXT DEFAULT 'other',
+    uploaded_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- 创建索引
 CREATE INDEX idx_song_likes_song_id ON song_likes(song_id);
+CREATE INDEX idx_songs_category ON songs(category);
+CREATE INDEX idx_songs_uploaded_at ON songs(uploaded_at DESC);
 
 -- 启用行级安全策略
 ALTER TABLE song_likes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE songs ENABLE ROW LEVEL SECURITY;
 
--- 允许所有人读取
-CREATE POLICY "Allow public read" ON song_likes
-    FOR SELECT USING (true);
+-- 点赞表权限策略
+CREATE POLICY "Allow public read" ON song_likes FOR SELECT USING (true);
+CREATE POLICY "Allow public insert" ON song_likes FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow public update" ON song_likes FOR UPDATE USING (true);
+CREATE POLICY "Allow public delete" ON song_likes FOR DELETE USING (true);
 
--- 允许所有人写入
-CREATE POLICY "Allow public insert" ON song_likes
-    FOR INSERT WITH CHECK (true);
-
--- 允许所有人更新
-CREATE POLICY "Allow public update" ON song_likes
-    FOR UPDATE USING (true);
-
--- 允许所有人删除
-CREATE POLICY "Allow public delete" ON song_likes
-    FOR DELETE USING (true);
+-- 歌曲表权限策略
+CREATE POLICY "公开读取" ON songs FOR SELECT USING (true);
+CREATE POLICY "公开写入" ON songs FOR INSERT WITH CHECK (true);
+CREATE POLICY "公开更新" ON songs FOR UPDATE USING (true);
+CREATE POLICY "公开删除" ON songs FOR DELETE USING (true);
 ```
 
 4. 获取 API 密钥：

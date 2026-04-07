@@ -77,13 +77,29 @@ class AudioPlayer {
     }
     
     /**
-     * 加载歌曲配置文件
+     * 加载歌曲（优先从 Supabase 数据库，失败时回退到本地 JSON）
      */
     async loadSongsConfig() {
+        // 尝试从数据库加载
+        if (typeof songsManager !== 'undefined') {
+            try {
+                const songs = await songsManager.getAllSongs();
+                if (songs && songs.length > 0) {
+                    this.songs = songs;
+                    console.log('✅ 从数据库加载歌曲:', songs.length, '首');
+                    return;
+                }
+            } catch (error) {
+                console.warn('⚠️ 从数据库加载失败，尝试本地配置:', error);
+            }
+        }
+        
+        // 回退到本地 JSON
         try {
             const response = await fetch('songs-config.json');
             const data = await response.json();
             this.songs = data.songs || [];
+            console.log('📄 从本地配置加载歌曲:', this.songs.length, '首');
         } catch (error) {
             console.error('加载歌曲配置失败:', error);
             this.songs = [];
@@ -462,7 +478,16 @@ class AudioPlayer {
             const duration = await uploadManager.getAudioDuration(result.song.file);
             result.song.duration = duration;
             
-            // 添加到歌曲列表
+            // 写入数据库
+            if (typeof songsManager !== 'undefined') {
+                const dbSong = await songsManager.addSong(result.song);
+                if (dbSong) {
+                    result.song.id = dbSong.id; // 使用数据库返回的 ID
+                    console.log('✅ 歌曲已写入数据库');
+                }
+            }
+            
+            // 添加到本地列表
             this.songs.push(result.song);
             this.likesCounts[result.song.id] = 0;
             
