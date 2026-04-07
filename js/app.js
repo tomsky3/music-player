@@ -84,11 +84,10 @@ class AudioPlayer {
         if (typeof songsManager !== 'undefined') {
             try {
                 const songs = await songsManager.getAllSongs();
-                if (songs && songs.length > 0) {
-                    this.songs = songs;
-                    console.log('✅ 从数据库加载歌曲:', songs.length, '首');
-                    return;
-                }
+                // 数据库加载成功（即使为空数组也算成功）
+                this.songs = songs || [];
+                console.log('✅ 从数据库加载歌曲:', this.songs.length, '首');
+                return;
             } catch (error) {
                 console.warn('⚠️ 从数据库加载失败，尝试本地配置:', error);
             }
