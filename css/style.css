@@ -1,0 +1,988 @@
+/* Tailwind CSS CDN */
+@import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
+
+/* 自定义CSS变量 */
+:root {
+    /* 主题色 */
+    --primary: #1DB954;
+    --primary-light: #1ED760;
+    --primary-dark: #169c46;
+    
+    /* 背景色 */
+    --bg-dark: #0a0a0a;
+    --bg-medium: #1a1a2e;
+    --bg-light: #16213e;
+    
+    /* 文字色 */
+    --text-primary: #FFFFFF;
+    --text-secondary: #B3B3B3;
+    --text-muted: #5F5F5F;
+    
+    /* 功能色 */
+    --error: #FF4757;
+    --success: #1DB954;
+    
+    /* 字体 */
+    --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    
+    /* 阴影 */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(29, 185, 84, 0.3);
+    
+    /* 玻璃效果 */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* 全局重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 50%, var(--bg-light) 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: 140px; /* 为底部播放栏留空间 */
+}
+
+/* 容器 */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* 页面头部 */
+.header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 40px 20px;
+}
+
+.header-title {
+    font-size: 48px;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.header-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+/* 歌曲网格布局 */
+.songs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
+    padding: 20px;
+}
+
+/* 歌曲卡片 */
+.song-card {
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.song-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    border-color: var(--primary);
+}
+
+.song-card:nth-child(1) { animation-delay: 0.1s; }
+.song-card:nth-child(2) { animation-delay: 0.15s; }
+.song-card:nth-child(3) { animation-delay: 0.2s; }
+.song-card:nth-child(4) { animation-delay: 0.25s; }
+.song-card:nth-child(5) { animation-delay: 0.3s; }
+.song-card:nth-child(6) { animation-delay: 0.35s; }
+
+.song-card.active {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+/* 封面容器 */
+.card-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+}
+
+.card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.song-card:hover .card-cover img {
+    transform: scale(1.1);
+}
+
+/* 播放图标叠加层 */
+.play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.song-card:hover .play-overlay,
+.song-card.active .play-overlay {
+    opacity: 1;
+}
+
+.play-icon-large {
+    width: 60px;
+    height: 60px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s ease;
+}
+
+.song-card:hover .play-icon-large {
+    transform: scale(1.1);
+}
+
+.play-icon-large svg {
+    width: 32px;
+    height: 32px;
+    fill: white;
+    margin-left: 3px;
+}
+
+/* 歌曲信息 */
+.card-info {
+    padding: 16px;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-artist {
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 底部播放栏 */
+.player-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--glass-border);
+    height: 120px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    animation: slideInUp 0.6s ease-out;
+}
+
+.player-content {
+    display: flex;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+    gap: 24px;
+}
+
+/* 播放器封面 */
+.player-cover {
+    flex-shrink: 0;
+}
+
+.player-cover img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s ease;
+}
+
+.player-cover img:hover {
+    transform: scale(1.05);
+}
+
+/* 播放器信息区域 */
+.player-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.song-details {
+    margin-bottom: 12px;
+}
+
+.song-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.song-artist {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* 播放控制按钮 */
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+.control-btn:hover {
+    color: var(--text-primary);
+    transform: scale(1.1);
+}
+
+.play-btn {
+    width: 40px;
+    height: 40px;
+    background: var(--primary) !important;
+    color: white !important;
+}
+
+.play-btn:hover {
+    background: var(--primary-light) !important;
+    transform: scale(1.15) !important;
+    box-shadow: var(--shadow-glow);
+}
+
+/* 进度条 */
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.time-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    min-width: 40px;
+    user-select: none;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--glass-border);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+    transition: height 0.2s ease;
+}
+
+.progress-bar:hover {
+    height: 6px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+.progress-thumb {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    background: var(--text-primary);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.progress-bar:hover .progress-thumb {
+    opacity: 1;
+}
+
+/* 音量控制 */
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.volume-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    transition: all 0.2s ease;
+}
+
+.volume-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+.volume-btn:hover {
+    color: var(--text-primary);
+}
+
+.volume-slider-container {
+    width: 100px;
+}
+
+.volume-slider {
+    width: 100%;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--glass-border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: var(--text-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: var(--text-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* 动画 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 160px;
+    }
+    
+    .header-title {
+        font-size: 32px;
+    }
+    
+    .songs-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 16px;
+    }
+    
+    .player-bar {
+        height: auto;
+        padding: 12px;
+    }
+    
+    .player-content {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    
+    .player-cover img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .player-info {
+        flex: 1 1 100%;
+    }
+    
+    .volume-control {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .volume-slider-container {
+        width: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 20px 16px;
+    }
+    
+    .header {
+        margin-bottom: 30px;
+        padding: 20px 10px;
+    }
+    
+    .header-title {
+        font-size: 28px;
+    }
+    
+    .header-subtitle {
+        font-size: 14px;
+    }
+    
+    .songs-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 10px;
+    }
+    
+    .card-info {
+        padding: 12px;
+    }
+    
+    .card-title {
+        font-size: 12px;
+    }
+    
+    .card-artist {
+        font-size: 11px;
+    }
+}
+
+/* ===== 上传按钮 ===== */
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.header-text {
+    text-align: left;
+}
+
+.upload-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+}
+
+.upload-btn:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
+}
+
+.upload-btn svg {
+    flex-shrink: 0;
+}
+
+/* ===== 双按钮样式 ===== */
+.upload-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.upload-btn.theme-btn {
+    background: linear-gradient(135deg, #1DB954 0%, #1ED760 100%);
+    border: 2px solid transparent;
+}
+
+.upload-btn.theme-btn:hover {
+    background: linear-gradient(135deg, #1ED760 0%, #1DB954 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(29, 185, 84, 0.4);
+}
+
+.upload-btn.other-btn {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+.upload-btn.other-btn:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* ===== 上传弹窗 ===== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background: var(--bg-medium);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: var(--glass-bg);
+    color: var(--text-primary);
+}
+
+.modal-close svg {
+    width: 24px;
+    height: 24px;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+/* ===== 表单样式 ===== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.form-label svg {
+    color: var(--primary);
+}
+
+.required {
+    color: var(--error);
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.2);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+/* 文件选择 */
+.file-input-wrapper {
+    position: relative;
+}
+
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.file-input-display {
+    padding: 32px 20px;
+    background: var(--glass-bg);
+    border: 2px dashed var(--glass-border);
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.file-input-wrapper:hover .file-input-display {
+    border-color: var(--primary);
+    background: rgba(29, 185, 84, 0.05);
+}
+
+.file-input-display svg {
+    width: 48px;
+    height: 48px;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.file-input-display span {
+    display: block;
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.file-input-display small {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* 上传进度 */
+.upload-progress {
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--glass-bg);
+    border-radius: 12px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 13px;
+}
+
+#progressStage {
+    color: var(--text-secondary);
+}
+
+#progressPercent {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.progress-bar-container {
+    height: 8px;
+    background: var(--glass-border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* 按钮组 */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary {
+    background: var(--glass-bg);
+    color: var(--text-secondary);
+    border: 1px solid var(--glass-border);
+}
+
+.btn-secondary:hover {
+    background: var(--glass-border);
+    color: var(--text-primary);
+}
+
+.btn-primary {
+    flex: 1;
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-light);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ===== 点赞按钮 ===== */
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px 16px;
+}
+
+.like-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.like-btn:hover {
+    background: var(--glass-bg);
+    color: var(--primary);
+}
+
+.like-btn.liked {
+    color: var(--primary);
+}
+
+.like-btn.liked svg {
+    fill: var(--primary);
+}
+
+.like-btn svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.2s ease;
+}
+
+.like-btn:hover svg {
+    transform: scale(1.15);
+}
+
+.like-btn.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.card-duration {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* ===== Toast 提示 ===== */
+.toast {
+    position: fixed;
+    bottom: 140px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--bg-medium);
+    color: var(--text-primary);
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    z-index: 3000;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.toast.success {
+    border-left: 4px solid var(--success);
+}
+
+.toast.error {
+    border-left: 4px solid var(--error);
+}
+
+/* ===== 响应式补充 ===== */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .header-text {
+        text-align: center;
+    }
+    
+    .upload-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .upload-btn {
+        flex: 1;
+        min-width: 140px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal {
+        width: 95%;
+        max-height: 95vh;
+    }
+}

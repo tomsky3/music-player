@@ -1,0 +1,24 @@
+{
+  "songs": [
+    {
+      "id": "demo-song-1",
+      "title": "示例歌曲 1",
+      "artist": "艺术家名称",
+      "album": "示例专辑",
+      "duration": "3:45",
+      "cover": "assets/covers/demo-cover-1.jpg",
+      "file": "assets/songs/demo-song-1.mp3",
+      "category": "other"
+    },
+    {
+      "id": "demo-song-2",
+      "title": "示例歌曲 2",
+      "artist": "艺术家名称",
+      "album": "示例专辑",
+      "duration": "4:12",
+      "cover": "assets/covers/demo-cover-2.jpg",
+      "file": "assets/songs/demo-song-2.mp3",
+      "category": "other"
+    }
+  ]
+}
